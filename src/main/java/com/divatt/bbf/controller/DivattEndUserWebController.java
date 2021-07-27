@@ -1,9 +1,9 @@
 package com.divatt.bbf.controller;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +20,8 @@ import com.divatt.bbf.common.EnumValues;
 import com.divatt.bbf.model.Category;
 import com.divatt.bbf.model.CategoryResponse;
 import com.divatt.bbf.model.DesignerResponse;
+import com.divatt.bbf.model.Product;
+import com.divatt.bbf.model.ProductResponse;
 import com.divatt.bbf.model.SubCategory;
 import com.divatt.bbf.model.UserRegistrationUiVo;
 
@@ -91,4 +93,28 @@ public class DivattEndUserWebController {
 	}
 	
 
+	@GetMapping("/getProductByCaregory/{categoryId}")
+	public ResponseEntity<?> getProductsByCategory(@PathVariable("categoryId") Integer categoryId)
+	{
+		List<Product> completeProductList=new ArrayList();
+		SubCategory[] subCats=restTemplate.getForObject(CONNECT_MONGO_UTIL + "/subCategory/getSubcategoryByCategoryId/"+categoryId,
+				SubCategory[].class);
+		List<SubCategory> subCatList=Arrays.asList(subCats);
+		subCatList.forEach(sub->
+		completeProductList.addAll(
+				Arrays.asList(
+		restTemplate.getForObject(CONNECT_MONGO_UTIL + "/findProductList/"+sub.getSubCategoryId(),
+						Product[].class)))
+				);
+		
+		
+		ProductResponse response=new ProductResponse();
+		response.setMessage("Product retrieved sucessfuly");
+		response.setStatus(EnumValues.DIVATT_HTTP_STATUS_OK);
+		response.setData(completeProductList);
+		
+		return (ResponseEntity<?>) Optional.of(response).map(e -> new ResponseEntity<>(e, HttpStatus.OK))
+				.orElseThrow(() -> new RuntimeException("Could not get product"));
+		
+	}
 }
