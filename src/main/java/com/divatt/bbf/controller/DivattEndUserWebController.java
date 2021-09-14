@@ -47,7 +47,7 @@ public class DivattEndUserWebController {
 		categoryList.forEach(c ->
 
 		c.setSubCategory(Arrays.asList(restTemplate.getForObject(
-				CONNECT_MONGO_UTIL + "/subCategory/getSubcategoryByCategoryId/" + c.getCategoryId(),
+				CONNECT_MONGO_UTIL + "/subCategory/getSubcategoryByCategoryId/" + c.getId(),
 				SubCategory[].class)))
 
 		);
@@ -103,7 +103,7 @@ public class DivattEndUserWebController {
 		subCatList.forEach(sub->
 		completeProductList.addAll(
 				Arrays.asList(
-		restTemplate.getForObject(CONNECT_MONGO_UTIL + "/findProductList/"+sub.getSubCategoryId(),
+		restTemplate.getForObject(CONNECT_MONGO_UTIL + "/findProductList/"+sub.getId(),
 						Product[].class)))
 				);
 		
@@ -116,5 +116,18 @@ public class DivattEndUserWebController {
 		return (ResponseEntity<?>) Optional.of(response).map(e -> new ResponseEntity<>(e, HttpStatus.OK))
 				.orElseThrow(() -> new RuntimeException("Could not get product"));
 		
+	}
+	@GetMapping("/products/{id}")
+	public ResponseEntity<?> getProductsByProductId(@PathVariable("id") Integer productId)
+	{
+		List<Product> completeProductList=new ArrayList();
+		Product p=restTemplate.getForObject(CONNECT_MONGO_UTIL+"/findProduct/"+productId, Product.class);
+		completeProductList.add(p);
+		ProductResponse response=new ProductResponse();
+		response.setMessage("Product retrieved sucessfuly");
+		response.setStatus(EnumValues.DIVATT_HTTP_STATUS_OK);
+		response.setData(completeProductList);
+		return (ResponseEntity<?>) Optional.of(response).map(e -> new ResponseEntity<>(e, HttpStatus.OK))
+				.orElseThrow(() -> new RuntimeException("Could not get product"));
 	}
 }

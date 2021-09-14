@@ -9,7 +9,7 @@ import java.util.List;
 
 public class Product {
 	
-    public int rowIndex;
+    public Long id;
 	
 	public String prdName;
 	
@@ -119,13 +119,7 @@ public class Product {
 	
 	
 	
-	 public int getRowIndex() {
-		return rowIndex;
-	}
-
-	public void setRowIndex(int rowIndex) {
-		this.rowIndex = rowIndex;
-	}
+	
 
 	public String getPrdName() {
 		return prdName;
@@ -535,6 +529,14 @@ public class Product {
 		this.ifUpperBodyCustomization = ifUpperBodyCustomization;
 	}
 
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
 	public Boolean getIfLowerCustomization() {
 		return ifLowerCustomization;
 	}
@@ -555,7 +557,7 @@ public class Product {
 	@Override
 	    public String toString() {
 	        return "Product{" +
-	                "rowIndex=" + rowIndex +
+	                "rowIndex=" + id +
 	                ", prdName=" + prdName +
 	                ", brand='" + brand + '\'' +
 	                ", modelNumber='" + modelNumber + '\'' +

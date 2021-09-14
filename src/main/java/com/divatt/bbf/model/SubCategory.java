@@ -7,7 +7,7 @@ import lombok.Data;
 public class SubCategory {
 
 	private Integer categoryId;
-	private Integer subCategoryId;
+	private Long id;
 	private String subCategoryName;
 	private String subCategoryDescription;
 	private Boolean status;
